@@ -1,6 +1,8 @@
-import csv
-from pathlib import Path
-from datetime import datetime
+import csv  # For handling CSV files
+from pathlib import Path  # For file system operations
+from datetime import datetime  # For timestamped folders and file names
+import subprocess  # For executing Git commands
+import sys  # For exiting if no Git is available
 
 # Define paths
 input_folder = Path("./input")  # Folder containing multiple input CSVs
@@ -83,7 +85,8 @@ for input_csv_path in input_folder.glob("*.csv"):
 
             # Create a safe file name for the HTML file
             safe_name = company_name.replace(" ", "_").replace("/", "-")
-            output_file_path = output_folder / f"{safe_name}.html"
+            output_file_path = output_folder / safe_name / "index.html"
+            output_file_path.parent.mkdir(parents=True, exist_ok=True)  # Ensure directory exists
 
             # Write the updated content to the new HTML file
             with output_file_path.open("w", encoding="utf-8") as output_file:
@@ -98,3 +101,25 @@ for input_csv_path in input_folder.glob("*.csv"):
 
 print(f"HTML files generated in: {output_folder}")
 print(f"CSV files generated in: {csv_folder}")
+
+# Ask user if they want to commit the changes
+commit_decision = input("Do you want to commit the changes to GitHub? (y/n): ").strip().lower()
+if commit_decision == "y":
+    # Prepare the commit message
+    commit_message = f"Auto-commit: Updated batch generated on {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
+    
+    try:
+        # Add all files to Git
+        subprocess.run(["git", "add", "."], check=True)
+        
+        # Commit the changes
+        subprocess.run(["git", "commit", "-m", commit_message], check=True)
+        
+        # Push the changes to GitHub
+        subprocess.run(["git", "push"], check=True)
+        print("Changes committed and pushed to GitHub.")
+    except subprocess.CalledProcessError as e:
+        print(f"An error occurred during the Git operation: {e}")
+        sys.exit(1)
+else:
+    print("Commit skipped. You can commit the changes manually later.")
