@@ -14,12 +14,11 @@ base_domain = "easywebstudios.xyz"
 
 # Create a timestamped subfolder in the output directory
 batch_timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-output_folder = output_base_folder / f"batch_{batch_timestamp}"
-output_folder.mkdir(parents=True, exist_ok=True)
+batch_folder = output_base_folder / f"batch_{batch_timestamp}"
+batch_folder.mkdir(parents=True, exist_ok=True)
 
-# Create a timestamped CSV subfolder in the batch folder
-csv_folder_timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-csv_folder = output_folder / f"csv_{csv_folder_timestamp}"
+# Create a single CSV subfolder within the batch folder
+csv_folder = batch_folder / "csv"
 csv_folder.mkdir(parents=True, exist_ok=True)
 
 # Ensure global resources exist
@@ -102,8 +101,7 @@ for input_csv_path in input_folder.glob("*.csv"):
 
             # Create a safe file name for the HTML file
             safe_name = company_name.replace(" ", "_").replace("/", "-")
-            output_file_path = output_folder / safe_name / "index.html"
-            output_file_path.parent.mkdir(parents=True, exist_ok=True)  # Ensure directory exists
+            output_file_path = batch_folder / f"{safe_name}.html"
 
             # Write the updated content to the new HTML file
             with output_file_path.open("w", encoding="utf-8") as output_file:
@@ -116,7 +114,7 @@ for input_csv_path in input_folder.glob("*.csv"):
             # Write the updated row to the new CSV
             writer.writerow(row)
 
-print(f"HTML files generated in: {output_folder}")
+print(f"HTML files generated in: {batch_folder}")
 print(f"CSV files generated in: {csv_folder}")
 
 # Ask user if they want to commit the changes
