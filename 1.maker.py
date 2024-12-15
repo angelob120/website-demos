@@ -10,7 +10,7 @@ template_path = Path("./niche/plumber/Website 1/index.html")
 output_base_folder = Path("./output")
 
 # Base domain for generated websites (update for GitHub Pages domain)
-base_domain = "https://<your-username>.github.io/<repository-name>"
+base_domain = "easywebstudios.xyz"
 
 # Define the correct output folder for HTML files
 html_output_folder = Path("/Users/ab/Downloads/Code Projects/Prospecting Tools/6. website maker")  # Correct folder for HTML files
@@ -108,7 +108,7 @@ for input_csv_path in input_folder.glob("*.csv"):
                 output_file.write(updated_content)
 
             # Generate the website URL
-            website_url = f"{base_domain}/{safe_name}.html"
+            website_url = f"{base_domain}/{safe_name}"
             row["Website We Made"] = website_url  # Add the URL to the row
 
             # Write the updated row to the new CSV
