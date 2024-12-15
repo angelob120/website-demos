@@ -35,7 +35,7 @@ with template_path.open("r", encoding="utf-8") as template_file:
     template_content = template_file.read()
 
 # Alternate column names
-company_name_alternates = ["Company Name", "BusinessName", "businessname", "Business", "business", "Name", "name"]
+company_name_alternates = ["Company Name", "BusinessName", "businessname", "Name", "name"]
 company_phone_alternates = ["Company Phone", "phone", "Phone", "Telephone", "telephone", "phone #1", "phone #2"]
 
 # Global set to track used company names
@@ -90,7 +90,7 @@ for input_csv_path in input_folder.glob("*.csv"):
 
             # Replace placeholders with actual data
             updated_content = template_content.replace("{{Company Name}}", company_name)
-            updated_content = template_content.replace("{{Company Phone}}", company_phone)
+            updated_content = updated_content.replace("{{Company Phone}}", company_phone)
 
             # Use relative paths for CSS and JS
             updated_content = updated_content.replace(
