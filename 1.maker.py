@@ -13,7 +13,7 @@ output_base_folder = Path("./output")
 base_domain = "https://<your-username>.github.io/<repository-name>"
 
 # Define the output folder for HTML files to be GitHub Pages-compatible
-html_output_folder = Path("./")  # Root directory of the repository
+html_output_folder = Path("./test-html")  # Folder for HTML files
 html_output_folder.mkdir(parents=True, exist_ok=True)
 
 # Create a single CSV subfolder within the output directory
@@ -22,8 +22,8 @@ csv_folder = output_base_folder / f"csv_{batch_timestamp}"
 csv_folder.mkdir(parents=True, exist_ok=True)
 
 # Ensure global resources exist
-css_path = output_base_folder / "style.css"
-js_path = output_base_folder / "script.js"
+css_path = Path("./style.css")
+js_path = Path("./script.js")
 
 if not css_path.exists():
     raise FileNotFoundError(f"CSS file not found: {css_path}")
@@ -94,9 +94,9 @@ for input_csv_path in input_folder.glob("*.csv"):
 
             # Use relative paths for CSS and JS
             updated_content = updated_content.replace(
-                "{{CSS Path}}", "style.css"
+                "{{CSS Path}}", "./style.css"
             ).replace(
-                "{{JS Path}}", "script.js"
+                "{{JS Path}}", "./script.js"
             )
 
             # Create a safe file name for the HTML file
@@ -108,7 +108,7 @@ for input_csv_path in input_folder.glob("*.csv"):
                 output_file.write(updated_content)
 
             # Generate the website URL
-            website_url = f"{base_domain}/{safe_name}.html"
+            website_url = f"{base_domain}/test-html/{safe_name}.html"
             row["Website We Made"] = website_url  # Add the URL to the row
 
             # Write the updated row to the new CSV
