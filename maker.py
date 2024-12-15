@@ -9,16 +9,16 @@ input_folder = Path("./input")  # Folder containing multiple input CSVs
 template_path = Path("./niche/plumber/Website 1/index.html")
 output_base_folder = Path("./output")
 
-# Base domain for generated websites
-base_domain = "easywebstudios.xyz"
+# Base domain for generated websites (can be updated based on GitHub Pages domain)
+base_domain = "https://<your-username>.github.io/<repository-name>"
 
-# Create a timestamped subfolder in the output directory
+# Define the output folder for HTML files to be GitHub Pages-compatible
+html_output_folder = Path("./")  # Root directory of the repository
+html_output_folder.mkdir(parents=True, exist_ok=True)
+
+# Create a single CSV subfolder within the output directory
 batch_timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-batch_folder = output_base_folder / f"batch_{batch_timestamp}"
-batch_folder.mkdir(parents=True, exist_ok=True)
-
-# Create a single CSV subfolder within the batch folder
-csv_folder = batch_folder / "csv"
+csv_folder = output_base_folder / f"csv_{batch_timestamp}"
 csv_folder.mkdir(parents=True, exist_ok=True)
 
 # Ensure global resources exist
@@ -94,27 +94,27 @@ for input_csv_path in input_folder.glob("*.csv"):
 
             # Use relative paths for CSS and JS
             updated_content = updated_content.replace(
-                "{{CSS Path}}", "../style.css"
+                "{{CSS Path}}", "style.css"
             ).replace(
-                "{{JS Path}}", "../script.js"
+                "{{JS Path}}", "script.js"
             )
 
             # Create a safe file name for the HTML file
             safe_name = company_name.replace(" ", "_").replace("/", "-")
-            output_file_path = batch_folder / f"{safe_name}.html"
+            output_file_path = html_output_folder / f"{safe_name}.html"
 
             # Write the updated content to the new HTML file
             with output_file_path.open("w", encoding="utf-8") as output_file:
                 output_file.write(updated_content)
 
             # Generate the website URL
-            website_url = f"{base_domain}/{safe_name}"
+            website_url = f"{base_domain}/{safe_name}.html"
             row["Website We Made"] = website_url  # Add the URL to the row
 
             # Write the updated row to the new CSV
             writer.writerow(row)
 
-print(f"HTML files generated in: {batch_folder}")
+print(f"HTML files generated in: {html_output_folder}")
 print(f"CSV files generated in: {csv_folder}")
 
 # Ask user if they want to commit the changes
