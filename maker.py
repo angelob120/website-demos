@@ -35,6 +35,10 @@ if not js_path.exists():
 with template_path.open("r", encoding="utf-8") as template_file:
     template_content = template_file.read()
 
+# Alternate column names
+company_name_alternates = ["Company Name", "BusinessName", "businessname", "Business", "business", "Name", "name"]
+company_phone_alternates = ["Company Phone", "phone", "Phone", "Telephone", "telephone", "phone #1", "phone #2"]
+
 # Global set to track used company names
 used_company_names = set()
 
@@ -49,16 +53,29 @@ for input_csv_path in input_folder.glob("*.csv"):
     # Prepare the output CSV
     with input_csv_path.open("r", encoding="utf-8") as csv_file, output_csv_path.open("w", encoding="utf-8", newline="") as output_csv_file:
         reader = csv.DictReader(csv_file)
+
         # Normalize headers
         reader.fieldnames = [name.strip() for name in reader.fieldnames]
+
+        # Detect columns dynamically
+        company_name_col = next((alt for alt in company_name_alternates if alt in reader.fieldnames), None)
+        company_phone_col = next((alt for alt in company_phone_alternates if alt in reader.fieldnames), None)
+
+        if not company_name_col:
+            print("No valid column found for company name. Skipping this file.")
+            continue
+        if not company_phone_col:
+            print("No valid column found for company phone. Skipping this file.")
+            continue
+
         fieldnames = reader.fieldnames + ["Website We Made"]  # Add the new column
         writer = csv.DictWriter(output_csv_file, fieldnames=fieldnames)
         writer.writeheader()
 
         for row in reader:
             # Safeguard against missing columns
-            company_name = row.get("Company Name", "").strip()
-            company_phone = row.get("Company Phone", "").strip()
+            company_name = row.get(company_name_col, "").strip()
+            company_phone = row.get(company_phone_col, "").strip()
 
             if not company_name or not company_phone:
                 print(f"Skipping row due to missing data: {row}")
