@@ -9,11 +9,11 @@ input_folder = Path("./input")  # Folder containing multiple input CSVs
 template_path = Path("./niche/plumber/Website 1/index.html")
 output_base_folder = Path("./output")
 
-# Base domain for generated websites (can be updated based on GitHub Pages domain)
+# Base domain for generated websites (update for GitHub Pages domain)
 base_domain = "https://<your-username>.github.io/<repository-name>"
 
-# Define the output folder for HTML files to be GitHub Pages-compatible
-html_output_folder = Path("./test-html")  # Folder for HTML files
+# Define the correct output folder for HTML files
+html_output_folder = Path("/Users/ab/Downloads/Code Projects/Prospecting Tools/6. website maker")  # Correct folder for HTML files
 html_output_folder.mkdir(parents=True, exist_ok=True)
 
 # Create a single CSV subfolder within the output directory
@@ -90,7 +90,7 @@ for input_csv_path in input_folder.glob("*.csv"):
 
             # Replace placeholders with actual data
             updated_content = template_content.replace("{{Company Name}}", company_name)
-            updated_content = updated_content.replace("{{Company Phone}}", company_phone)
+            updated_content = template_content.replace("{{Company Phone}}", company_phone)
 
             # Use relative paths for CSS and JS
             updated_content = updated_content.replace(
@@ -108,7 +108,7 @@ for input_csv_path in input_folder.glob("*.csv"):
                 output_file.write(updated_content)
 
             # Generate the website URL
-            website_url = f"{base_domain}/test-html/{safe_name}.html"
+            website_url = f"{base_domain}/{safe_name}.html"
             row["Website We Made"] = website_url  # Add the URL to the row
 
             # Write the updated row to the new CSV
